@@ -28,12 +28,12 @@ public class RedisBolt extends AbstractRedisBolt {
 		
 		try {
 				
-			String date = tuple.getStringByField( "date" );
-			String carNumber = tuple.getStringByField( "car_number" );
+			String hashtag = tuple.getStringByField( "hashtag" );
+			String location = tuple.getStringByField( "location" );
 	
 			jedisCommands = getInstance();
-			jedisCommands.sadd( date, carNumber );
-			jedisCommands.expire( date, 60 * 60 * 24 * 7 );
+			jedisCommands.sadd( hashtag, location );
+			jedisCommands.expire( hashtag, 60 * 60 * 24 * 7 );
 	
 		} catch (JedisConnectionException e) {
 			throw new RuntimeException( "Exception occurred to JedisConnection", e );
