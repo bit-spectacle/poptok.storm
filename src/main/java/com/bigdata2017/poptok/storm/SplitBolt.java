@@ -41,7 +41,7 @@ public class SplitBolt extends BaseBasicBolt {
 
 		// 실시간 주행 정보의 데이터셋을 정의. emit를 통해 다음 Bolt로 넘어감(비정형->정형)
 		// 해시태그, 지역 번호, 날짜
-		collector.emit(new Values(new StringBuffer(sValue)));
+		collector.emit(new Values(sValue));
 	}
 
 	// 9개 의 데이터셋과 일치하는 필드명을 정의
