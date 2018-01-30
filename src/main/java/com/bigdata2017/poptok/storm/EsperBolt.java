@@ -36,11 +36,15 @@ public class EsperBolt extends BaseBasicBolt {
 		espService = EPServiceProviderManager.getDefaultProvider( configuration );
 		espService.initialize();
 		
+		// 에스퍼 EPL 쿼리 정의
 		String eplOverSpeed =  //해쉬태그 한시간마다 카운팅하기
 				"select hashtag, count(*)" + 
 				"from table_poptok_hashtag " + 
 				"group by hashtag";//win-> epl로 시간 속도 새는것
+		
 		EPStatement stmtESP = espService.getEPAdministrator().createEPL( eplOverSpeed );
+		
+		// EPL 쿼리 조건에 일치하는 데이터가 발생했을 때 호출 될 이벤트 함수 등록
 		stmtESP.addListener( new UpdateListener(){
 			@Override
 			public void update( EventBean[] newEvents, EventBean[] oldEvents ) {
@@ -56,7 +60,7 @@ public class EsperBolt extends BaseBasicBolt {
 
 		String tValue = tuple.getString(0); 
 
-	
+		// 볼트로 넘어 오는 튜플을 VO 객체에 담아 에스퍼 엔진에 운행 정보를 등록
 		String[] receiveData = tValue.split("\\,");
 
 		HashtagInfo HashtagInfo = new HashtagInfo();
@@ -64,14 +68,20 @@ public class EsperBolt extends BaseBasicBolt {
 		HashtagInfo.setLocation( receiveData[1] );
 		HashtagInfo.setDate( receiveData[2] );
 
+		// 에스퍼는 VO객체를 메모리 상에서 등록된 EPL 쿼리를 실행에 사용하며 
+		// 해당 이벤트 발생 시, 리스너가 실행
 		espService.getEPRuntime().sendEvent( HashtagInfo ); 
 
 		//LOGGER.error( "sendEvent:" + HashtagInfo.toString() );
 		
-		if( isOverSpeedEvent ) {
-			
+		// 리스너가 실행 되면 볼트와 공유하고 있는 변수 isOverSpeedEvent 가 true로 설정
+		// 다음 볼트(RedisBolt)에 해시태그 데이터(차량번호 + 타임스탬프)를 전송
+		if( isOverSpeedEvent ) 
+		{	
+			//emit으로 다음 bolt로 보내버리는 작업
 			collector.emit( new Values( HashtagInfo.getHashTag().substring(0,2), 
-										HashtagInfo.getLocation() + "-" + HashtagInfo.getDate() ) );//emit으로 다음 bolt로 보내버리는 작업
+										HashtagInfo.getLocation() + "-" + HashtagInfo.getDate() ) );
+			
 			isOverSpeedEvent = false;
 		}		
 	}
