@@ -29,10 +29,11 @@ public class SplitBolt extends BaseBasicBolt {
 		LOGGER.error("tValue = " + tValue);
 		
 		// - 로 로그 앞쪽의 로그정보 부분과 로그 뒷쪽의 태그 부분으로 구분
-		String[] substrData = tValue.split("-");
+		//String[] substrData = tValue.split("-");
+		int index = (tValue.indexOf("[DEBUG] default - ") + 18);
+		String sValue = tValue.substring(index);
 		// 로그 앞쪽 로그 정보부분을 잘라낸 태그에서 공백을 모두 삭제
-		String sValue = substrData[1].replaceAll(" ", "");
-		sValue = sValue.replaceAll("#", "");
+		sValue = sValue.replaceAll(" ", "").replaceAll("#", "");
 		LOGGER.error("sValue = " + sValue);
 		
 		// ,로 각 태그 구분
@@ -41,7 +42,7 @@ public class SplitBolt extends BaseBasicBolt {
 
 		// 실시간 주행 정보의 데이터셋을 정의. emit를 통해 다음 Bolt로 넘어감(비정형->정형)
 		// 해시태그, 지역 번호, 날짜
-		collector.emit(new Values(tValue));
+		collector.emit(new Values(sValue));
 	}
 
 	// 9개 의 데이터셋과 일치하는 필드명을 정의
