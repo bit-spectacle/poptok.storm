@@ -35,7 +35,7 @@ public class RedisBolt extends AbstractRedisBolt {
 			//String location = tuple.getStringByField( "locationNo" );
 			
 			String[] receiveData = hashtag.split(",");
-			Double tagCnt = 1.0;
+			Double tagCnt = 0.0;
 			jedisCommands = getInstance();
 				
 			// 레디스 클라이언트 라이블러리 Jedis의 JedisCommnads를 이용해 레디스 서버에 두 값을 키와 값으로 적재.
@@ -43,6 +43,8 @@ public class RedisBolt extends AbstractRedisBolt {
 			for(int i=0; i<receiveData.length; i++)
 			{
 				tagCnt = jedisCommands.zscore("poptok_tag", receiveData[i]);
+				if(tagCnt == null)
+					tagCnt = 0.0;
 				jedisCommands.zadd("poptok_tag", (tagCnt + 1.0), receiveData[i]);
 				//jedisCommands.sadd( hashtag, location );
 				//jedisCommands.expire( hashtag, 60 * 60 * 24 * 7 );
