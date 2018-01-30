@@ -48,7 +48,7 @@ public class RedisBolt extends AbstractRedisBolt {
 				jedisCommands.zadd("poptok_tag", (tagCnt + 1.0), receiveData[i]);
 				//jedisCommands.sadd( hashtag, location );
 				//jedisCommands.expire( hashtag, 60 * 60 * 24 * 7 );
-				LOGGER.info("poptok_tag = " + receiveData[i] + ", count = " + tagCnt);
+				LOGGER.error("poptok_tag = " + receiveData[i] + ", count = " + tagCnt);
 			}
 	
 		} catch (JedisConnectionException e) {
