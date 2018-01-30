@@ -29,7 +29,7 @@ public class SplitBolt extends BaseBasicBolt {
 		LOGGER.error(tValue);
 		
 		// - 로 로그 앞쪽의 로그정보 부분과 로그 뒷쪽의 태그 부분으로 구분
-		String[] substrData = tValue.split("\\-");
+		String[] substrData = tValue.split("-");
 		// 로그 앞쪽 로그 정보부분을 잘라낸 태그에서 공백을 모두 삭제
 		String sValue = substrData[1].replaceAll(" ", "");
 		sValue = sValue.replaceAll("#", "");

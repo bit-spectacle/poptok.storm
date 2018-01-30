@@ -34,7 +34,7 @@ public class RedisBolt extends AbstractRedisBolt {
 			String hashtag = tuple.getStringByField( "poptok_tag" );
 			//String location = tuple.getStringByField( "locationNo" );
 			
-			String[] receiveData = hashtag.split("\\,");
+			String[] receiveData = hashtag.split(",");
 			Double tagCnt = 1.0;
 			jedisCommands = getInstance();
 				
